@@ -1,11 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="style.css">
-    <title>Quiz - A Metamorfose</title>
-  </head>
-  
-  <body>
-    <h1>Hello, world!</h1>
-  </body>
+    <head>
+        <title>Trabalho de português</title>
+        <style>
+            .galeria {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+            }
+
+        .galeria img
+        {
+           cursor: pointer;
+        }
+        .galeria img {
+            transition: transform 0.3s;
+        }
+        .galeria img:hover {
+            transform: scale(1.1);
+            border: 6px ridge rgb(255, 255, 255);
+        }
+        .secao {
+            background-color: #f5efe6;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .secao h2 {
+            color: #3a2a1a;
+        } 
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Playfair Display', serif;
+            padding:50px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #f5c842;
+        }
+
+        p {
+            color: #aaaaaa;
+        }
+
+        h2 {
+            color: #f5c842
+        }
+
+        a {
+            color:#f5c842
+        }
+         .duvidas {
+            background-color: #f5efe6;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .duvidas h2 {
+            color: #3a2a1a;
+        } 
+        </style>
+    </head>
+<body>
+
+    <h1>A metamorfose</h1>
+    <div class="galeria">
+        <img src="familia.jpg" alt="Família" width="150">
+        <img src="barata.jpg" alt="Barata" width="150">
+        <img src="metamorfose.jpg" alt="Gregor" width="150">
+        <img src="metamorfo.jpg" alt="Gregor" width="150">
+        <img src="transformacao.jpg" alt="Transformação" width="150">
+    </div>
+<div class="secao">
+    <h2>Resumo</h2>
+    <p>A história de Gregor Samsa, um caixeiro-viajante que acorda transformado em um inseto gigante. Ele luta para se adaptar à sua nova forma e enfrenta a rejeição de sua família e da sociedade. A narrativa explora temas como alienação, identidade e a condição humana.</p>
+</div>
+<div class="duvidas">
+    <h2>Oque é um quiz?</h2>
+    <p>Quiz é um gênero textual interativo formado por uma sequência de perguntas e respostas, geralmente elaborado com o objetivo de testar conhecimentos, estimular a participação do leitor ou proporcionar entretenimento. Sua linguagem costuma ser clara, objetiva e dinâmica, podendo apresentar alternativas de resposta ou perguntas diretas sobre determinado tema.</p>
+</body>
 </html>
