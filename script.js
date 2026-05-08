@@ -11,3 +11,22 @@ start.addEventListener("click", () => {
     
   document.getElementById("quiz").style.display="block"
 });
+
+const resposta = document.querySelectorAll(".resposta");
+
+let atual = 1
+
+resposta.addEventListener("click", () => {
+  document.getElementById("p" + atual).style.display="none";
+  atual++;
+
+  const proxima = getElemetById("p" + atual)
+
+  if(proxima) {
+    proxima.style.display="block";
+  } else {
+    alert("fim do quiz")
+});
+
+
+
