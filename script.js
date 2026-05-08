@@ -7,6 +7,6 @@ start.addEventListener("click", () => {
 const nome = document.getElementById("nome").value;
 
 if (nome === ""){
-  aler("digite seu nome")
+  alert("digite seu nome")
   return;
 }
