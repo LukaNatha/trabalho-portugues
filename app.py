@@ -12,7 +12,7 @@ def init_db():
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS ranking (
-            id INTEGER PRIaMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
             pontuacao INTEGER NOT NULL
         )
