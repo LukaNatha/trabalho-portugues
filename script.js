@@ -4,6 +4,7 @@ const quiz = document.getElementById("quiz");
 let atual = 1;
 let pontos = 0;
 
+// botão iniciar
 start.addEventListener("click", () => {
 
   const nome = document.getElementById("nome").value;
@@ -16,8 +17,10 @@ start.addEventListener("click", () => {
   quiz.style.display = "block";
 });
 
+// clique nas respostas
 quiz.addEventListener("click", (event) => {
 
+  // verifica se clicou em um botão
   if (event.target.tagName === "BUTTON") {
 
     // verifica se acertou
@@ -30,24 +33,26 @@ quiz.addEventListener("click", (event) => {
 
     atual++;
 
+    // próxima pergunta
     const proxima = document.getElementById("p" + atual);
 
     if (proxima) {
 
-      // mostra próxima pergunta
       proxima.style.display = "block";
 
     } else {
 
-      // fim do quiz
+      // pega o nome
       const nome = document.getElementById("nome").value;
 
+      // esconde quiz
       quiz.style.display = "none";
 
+      // cria resultado no HTML
       document.body.innerHTML += `
         <div id="resultado">
           <h2>${nome}, você terminou o quiz!</h2>
-          <p>Você fez ${pontos} pontos de 17.</p>
+          <p>Você fez ${pontos} de 17 pontos.</p>
         </div>
       `;
     }
