@@ -72,7 +72,7 @@ start.addEventListener("click", () => {
 
   // esconder conteúdo inicial
   document.getElementById("galeria").style.display = "none";
-  document.getElementById("resumo").style.display = "none";
+  document.getElementById("secao").style.display = "none";
   document.getElementById("duvidas").style.display = "none";
   document.getElementById("nome").style.display = "none";
   document.getElementById("iniciar").style.display = "none";
