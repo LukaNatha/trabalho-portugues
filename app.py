@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
 import os
-#banco de dados e server
+
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,8 +13,9 @@ def init_db():
     c.execute("""
         CREATE TABLE IF NOT EXISTS ranking (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            pontuacao INTEGER NOT NULL
+            nome TEXT UNIQUE,
+            pontuacao INTEGER NOT NULL,
+            tempo INTEGER NOT NULL
         )
     """)
     conn.commit()
@@ -35,15 +36,29 @@ def salvar():
     dados = request.get_json()
     nome = dados.get("nome", "").strip()
     pontuacao = dados.get("pontuacao", 0)
+    tempo = dados.get("tempo", 0)
 
     if not nome:
         return jsonify({"erro": "Nome inválido"}), 400
 
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-    c.execute("INSERT INTO ranking (nome, pontuacao) VALUES (?, ?)", (nome, pontuacao))
-    conn.commit()
-    conn.close()
+
+    c.execute("SELECT id FROM ranking WHERE nome = ?", (nome,))
+    if c.fetchone():
+        conn.close()
+        return jsonify({"erro": "Nome já usado"}), 400
+
+    try:
+        c.execute(
+            "INSERT INTO ranking (nome, pontuacao, tempo) VALUES (?, ?, ?)",
+            (nome, pontuacao, tempo)
+        )
+        conn.commit()
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+    finally:
+        conn.close()
 
     return jsonify({"ok": True})
 
@@ -51,11 +66,16 @@ def salvar():
 def get_ranking():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-    c.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC LIMIT 20")
+    c.execute("""
+        SELECT nome, pontuacao, tempo 
+        FROM ranking 
+        ORDER BY pontuacao DESC, tempo ASC 
+        LIMIT 42
+    """)
     rows = c.fetchall()
     conn.close()
 
-    resultado = [{"nome": r[0], "pontuacao": r[1]} for r in rows]
-    return jsonify(resultado)
+    return jsonify([{"nome": r[0], "pontuacao": r[1], "tempo": r[2]} for r in rows])
 
-app.run(host="0.0.0.0", port=5000, debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
