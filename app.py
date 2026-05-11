@@ -4,16 +4,18 @@ import os
 
 app = Flask(__name__)
 
+# Configuração do caminho do banco de dados
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(BASE_DIR, "ranking.db")
 
 def init_db():
+    """Cria a tabela se não existir. Sem a restrição UNIQUE no nome."""
     conn = sqlite3.connect(DB)
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS ranking (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT UNIQUE,
+            nome TEXT NOT NULL,
             pontuacao INTEGER NOT NULL,
             tempo INTEGER NOT NULL
         )
@@ -43,23 +45,14 @@ def salvar():
 
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-
-    c.execute("SELECT id FROM ranking WHERE nome = ?", (nome,))
-    if c.fetchone():
-        conn.close()
-        return jsonify({"erro": "Nome já usado"}), 400
-
-    try:
-        c.execute(
-            "INSERT INTO ranking (nome, pontuacao, tempo) VALUES (?, ?, ?)",
-            (nome, pontuacao, tempo)
-        )
-        conn.commit()
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
-    finally:
-        conn.close()
-
+    
+    c.execute(
+        "INSERT INTO ranking (nome, pontuacao, tempo) VALUES (?, ?, ?)",
+        (nome, pontuacao, tempo)
+    )
+    
+    conn.commit()
+    conn.close()
     return jsonify({"ok": True})
 
 @app.route("/ranking")
