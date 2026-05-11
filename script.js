@@ -6,21 +6,20 @@ let atual = 1;
 let pontos = 0;
 let tempoPergunta = 30;
 let intervalo;
-
-
 let tempoTotal = 0;
-let cronometro;
+let cronometroGlobal;
 
-function iniciarCronometro() {
+function iniciarCronometroGlobal() {
     tempoTotal = 0;
-    cronometro = setInterval(() => {
+    cronometroGlobal = setInterval(() => {
         tempoTotal++;
     }, 1000);
 }
 
-function iniciarTimer() {
+function iniciarTimerPergunta() {
     tempoPergunta = 30;
     timerHTML.innerText = `Tempo: ${tempoPergunta}s`;
+    
     intervalo = setInterval(() => {
         tempoPergunta--;
         timerHTML.innerText = `Tempo: ${tempoPergunta}s`;
@@ -40,14 +39,14 @@ function passarPergunta() {
 
     if (proxima) {
         proxima.style.display = "block";
-        iniciarTimer();
+        iniciarTimerPergunta();
     } else {
         finalizarQuiz();
     }
 }
 
 function finalizarQuiz() {
-    clearInterval(cronometro);
+    clearInterval(cronometroGlobal);
     const nome = document.getElementById("nome").value;
     
     quiz.style.display = "none";
@@ -62,32 +61,36 @@ function finalizarQuiz() {
             tempo: tempoTotal
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.erro) {
-            alert(data.erro);
-            window.location.reload();
-        } else {
-            exibirResultado(nome);
-        }
+    .then(() => {
+        exibirRankingFinal(nome);
+    })
+    .catch(err => {
+        console.error("Erro ao salvar:", err);
+        exibirRankingFinal(nome);
     });
 }
 
-function exibirResultado(nome) {
+function exibirRankingFinal(nome) {
     document.body.innerHTML = `
         <div id="resultado">
-            <h2>Parabéns, ${nome}!</h2>
-            <p>Pontos: ${pontos}/17 | Tempo Total: ${tempoTotal}s</p>
+            <h2 style="color: #f5c842;">${nome}, quiz concluído!</h2>
+            <p style="color: #fff;">Você acertou ${pontos} de 17 questões em ${tempoTotal} segundos.</p>
         </div>
-        <div id="ranking-container" style="background:#f5efe6; padding:20px; border-radius:10px; color:#3a2a1a; max-width:500px; margin:20px auto;">
-            <h3>🏆 TOP 42 RANKING</h3>
-            <table style="width:100%">
+        
+        <div id="ranking-box" style="background: #f5efe6; padding: 20px; border-radius: 10px; max-width: 500px; margin: 30px auto; color: #3a2a1a;">
+            <h2 style="margin-top: 0;">🏆 Top 42 Jogadores</h2>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
-                    <tr><th>#</th><th>Nome</th><th>Pontos</th><th>Tempo</th></tr>
+                    <tr style="border-bottom: 2px solid #3a2a1a;">
+                        <th style="padding: 8px;">#</th>
+                        <th style="padding: 8px;">Nome</th>
+                        <th style="padding: 8px;">Pontos</th>
+                        <th style="padding: 8px; text-align: right;">Tempo</th>
+                    </tr>
                 </thead>
                 <tbody id="ranking-body"></tbody>
             </table>
-            <button onclick="window.location.reload()">Jogar de novo</button>
+            <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">Tentar Novamente</button>
         </div>
     `;
     carregarRanking();
@@ -99,34 +102,34 @@ function carregarRanking() {
         .then(dados => {
             const tbody = document.getElementById("ranking-body");
             tbody.innerHTML = dados.map((item, i) => `
-                <tr style="border-bottom:1px solid #ccc">
-                    <td>${i + 1}</td>
-                    <td>${item.nome}</td>
-                    <td>${item.pontuacao}/17</td>
-                    <td>${item.tempo}s</td>
+                <tr style="border-bottom: 1px solid #d9cfc5;">
+                    <td style="padding: 8px;">${i + 1}º</td>
+                    <td style="padding: 8px;">${item.nome}</td>
+                    <td style="padding: 8px;">${item.pontuacao}/17</td>
+                    <td style="padding: 8px; text-align: right;">${item.tempo}s</td>
                 </tr>
             `).join("");
         });
 }
 
 start.addEventListener("click", () => {
-    const nomeInput = document.getElementById("nome");
-    if (nomeInput.value.trim() === "") {
-        alert("Digite seu nome!");
+    const nomeVal = document.getElementById("nome").value.trim();
+    if (!nomeVal) {
+        alert("Por favor, digite seu nome.");
         return;
     }
-    
+
     document.getElementById("galeria").style.display = "none";
     document.getElementById("secao").style.display = "none";
     document.getElementById("duvidas").style.display = "none";
-    nomeInput.style.display = "none";
+    document.getElementById("nome").style.display = "none";
     start.style.display = "none";
 
     quiz.style.display = "block";
     document.getElementById("p1").style.display = "block";
-
-    iniciarCronometro();
-    iniciarTimer();
+    
+    iniciarCronometroGlobal();
+    iniciarTimerPergunta();
 });
 
 quiz.addEventListener("click", (event) => {
